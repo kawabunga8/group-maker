@@ -4,6 +4,22 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase, Class } from '@/lib/supabaseClient';
 
+function hashStringToInt(input: string) {
+  let h = 0;
+  for (let i = 0; i < input.length; i++) {
+    h = (h * 31 + input.charCodeAt(i)) >>> 0;
+  }
+  return h;
+}
+
+function classCardColors(classId: string) {
+  // Pastel-ish HSL: rotate hue by id, keep saturation/lightness gentle.
+  const hue = hashStringToInt(classId) % 360;
+  const backgroundColor = `hsl(${hue} 65% 95%)`;
+  const borderColor = `hsl(${hue} 55% 80%)`;
+  return { backgroundColor, borderColor };
+}
+
 export default function ClassesPage() {
   const [classes, setClasses] = useState<Class[]>([]);
   const [newClassName, setNewClassName] = useState('');
@@ -101,10 +117,13 @@ export default function ClassesPage() {
           <p className="text-slate-600">No classes yet. Create one to get started!</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {classes.map((classItem) => (
+            {classes.map((classItem) => {
+              const colors = classCardColors(classItem.id);
+              return (
               <div
                 key={classItem.id}
-                className="flex flex-col justify-between p-4 bg-white border border-sky-200 rounded hover:shadow transition"
+                className="flex flex-col justify-between p-4 rounded hover:shadow transition"
+                style={{ backgroundColor: colors.backgroundColor, border: `1px solid ${colors.borderColor}` }}
               >
                 <div>
                   <h3 className="text-lg font-semibold text-slate-900 break-words">
@@ -130,7 +149,8 @@ export default function ClassesPage() {
                   </button>
                 </div>
               </div>
-            ))}
+            );
+            })}
           </div>
         )}
       </div>
