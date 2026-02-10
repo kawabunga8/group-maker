@@ -18,7 +18,7 @@ export default function ClassesPage() {
         const { data, error } = await supabase
           .from('classes')
           .select('*')
-          .order('created_at', { ascending: false });
+          .order('name', { ascending: true });
 
         if (error) throw error;
         setClasses(data || []);
