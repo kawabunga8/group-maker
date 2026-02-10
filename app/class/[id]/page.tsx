@@ -188,7 +188,7 @@ export default function ClassDetailPage() {
         <p className="text-red-600">Class not found</p>
         <button
           onClick={() => router.push('/')}
-          className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+          className="mt-4 px-4 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600"
         >
           Back to Classes
         </button>
@@ -197,14 +197,14 @@ export default function ClassDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-sky-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-slate-900">{classData.name}</h1>
           <button
             onClick={() => router.push('/')}
-            className="px-4 py-2 bg-slate-700 text-white rounded hover:bg-slate-800 transition"
+            className="px-4 py-2 bg-slate-600 text-white rounded hover:bg-slate-700 transition"
           >
             Back
           </button>
@@ -219,7 +219,7 @@ export default function ClassDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left: Students Management */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded border border-slate-200 p-6 h-full">
+            <div className="bg-white rounded border border-sky-200 p-6 h-full">
               <h2 className="text-xl font-semibold text-slate-900 mb-4">
                 Students ({students.length})
               </h2>
@@ -232,11 +232,11 @@ export default function ClassDetailPage() {
                     placeholder="Student name..."
                     value={newStudentName}
                     onChange={(e) => setNewStudentName(e.target.value)}
-                    className="px-3 py-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="px-3 py-2 border border-sky-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-400"
                   />
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+                    className="px-4 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600 transition"
                   >
                     Add Student
                   </button>
@@ -246,7 +246,7 @@ export default function ClassDetailPage() {
               {/* Bulk Add Toggle */}
               <button
                 onClick={() => setShowBulkInput(!showBulkInput)}
-                className="w-full mb-4 px-4 py-2 bg-slate-200 text-slate-900 rounded hover:bg-slate-300 transition text-sm"
+                className="w-full mb-4 px-4 py-2 bg-sky-100 text-slate-900 rounded hover:bg-sky-200 transition text-sm"
               >
                 {showBulkInput ? 'Hide Bulk Add' : 'Bulk Add'}
               </button>
@@ -259,11 +259,11 @@ export default function ClassDetailPage() {
                       placeholder="One name per line..."
                       value={bulkStudentText}
                       onChange={(e) => setBulkStudentText(e.target.value)}
-                      className="px-3 py-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm h-28"
+                      className="px-3 py-2 border border-sky-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-400 text-sm h-28"
                     />
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition"
+                      className="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition"
                     >
                       Add All
                     </button>
@@ -289,15 +289,15 @@ export default function ClassDetailPage() {
                         onClick={() => toggleAbsent(student.id)}
                         className={`text-xs px-2 py-1 rounded ${
                           absentIds.has(student.id)
-                          ? "bg-red-600 text-white"
-                          : "bg-gray-200 text-gray-800"
+                          ? "bg-rose-500 text-white"
+                          : "bg-sky-100 text-slate-800"
                         }`}
                       >
                         {absentIds.has(student.id) ? "Absent" : "Present"}
                       </button>
                       <button
                         onClick={() => handleDeleteStudent(student.id)}
-                        className="text-red-600 hover:text-red-800 text-xs font-semibold"
+                        className="text-rose-500 hover:text-rose-700 text-xs font-semibold"
                       >
                         ×
                       </button>
@@ -311,7 +311,7 @@ export default function ClassDetailPage() {
 
           {/* Right: Grouping Controls & Results */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded border border-slate-200 p-6">
+            <div className="bg-white rounded border border-sky-200 p-6">
               <h2 className="text-xl font-semibold text-slate-900 mb-4">
                 Group Generator
               </h2>
@@ -332,7 +332,7 @@ export default function ClassDetailPage() {
                         max="20"
                         value={groupSize}
                         onChange={(e) => setGroupSize(Math.max(2, parseInt(e.target.value) || 1))}
-                        className="w-full px-3 py-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full px-3 py-2 border border-sky-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-400"
                       />
                     </div>
 
@@ -343,7 +343,7 @@ export default function ClassDetailPage() {
                       <select
                         value={strategy}
                         onChange={(e) => setStrategy(e.target.value as GroupingStrategy)}
-                        className="w-full px-3 py-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full px-3 py-2 border border-sky-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-400"
                       >
                         <option value="allow-smaller">Allow Last Group Smaller</option>
                         <option value="distribute">Distribute Across Groups</option>
@@ -353,7 +353,7 @@ export default function ClassDetailPage() {
                     <div className="flex gap-2">
                       <button
                         onClick={handleGenerateGroups}
-                        className="flex-1 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition font-medium"
+                        className="flex-1 px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition font-medium"
                       >
                         Generate
                       </button>
@@ -361,13 +361,13 @@ export default function ClassDetailPage() {
                         <>
                           <button
                             onClick={handleRegenerateGroups}
-                            className="flex-1 px-4 py-2 bg-amber-600 text-white rounded hover:bg-amber-700 transition font-medium"
+                            className="flex-1 px-4 py-2 bg-orange-400 text-white rounded hover:bg-orange-500 transition font-medium"
                           >
                             Regenerate
                           </button>
                           <button
                             onClick={handleCopyGroups}
-                            className="flex-1 px-4 py-2 bg-violet-600 text-white rounded hover:bg-violet-700 transition font-medium"
+                            className="flex-1 px-4 py-2 bg-purple-400 text-white rounded hover:bg-purple-500 transition font-medium"
                           >
                             Copy
                           </button>

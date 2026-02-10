@@ -65,7 +65,7 @@ export default function ClassesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-sky-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold text-slate-900 mb-8">Group Maker</h1>
 
@@ -83,11 +83,11 @@ export default function ClassesPage() {
               placeholder="Enter class name..."
               value={newClassName}
               onChange={(e) => setNewClassName(e.target.value)}
-              className="flex-1 px-4 py-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="flex-1 px-4 py-2 border border-sky-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-400"
             />
             <button
               type="submit"
-              className="px-6 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition"
+              className="px-6 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition"
             >
               Create Class
             </button>
@@ -104,7 +104,7 @@ export default function ClassesPage() {
             classes.map((classItem) => (
               <div
                 key={classItem.id}
-                className="flex items-center justify-between p-4 bg-white border border-slate-200 rounded hover:shadow transition"
+                className="flex items-center justify-between p-4 bg-white border border-sky-200 rounded hover:shadow transition"
               >
                 <div>
                   <h3 className="text-lg font-semibold text-slate-900">
@@ -117,13 +117,13 @@ export default function ClassesPage() {
                 <div className="flex gap-2">
                   <Link
                     href={`/class/${classItem.id}`}
-                    className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+                    className="px-4 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600 transition"
                   >
                     Open
                   </Link>
                   <button
                     onClick={() => handleDeleteClass(classItem.id)}
-                    className="px-4 py-2 bg-rose-600 text-white rounded hover:bg-rose-700 transition"
+                    className="px-4 py-2 bg-rose-400 text-white rounded hover:bg-rose-500 transition"
                   >
                     Delete
                   </button>
