@@ -65,9 +65,9 @@ export default function ClassesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Group Maker</h1>
+        <h1 className="text-3xl font-bold text-slate-900 mb-8">Group Maker</h1>
 
         {error && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded">
@@ -83,11 +83,11 @@ export default function ClassesPage() {
               placeholder="Enter class name..."
               value={newClassName}
               onChange={(e) => setNewClassName(e.target.value)}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 px-4 py-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
             <button
               type="submit"
-              className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+              className="px-6 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition"
             >
               Create Class
             </button>
@@ -97,33 +97,33 @@ export default function ClassesPage() {
         {/* Classes List */}
         <div className="space-y-4">
           {loading ? (
-            <p className="text-gray-600">Loading classes...</p>
+            <p className="text-slate-600">Loading classes...</p>
           ) : classes.length === 0 ? (
-            <p className="text-gray-600">No classes yet. Create one to get started!</p>
+            <p className="text-slate-600">No classes yet. Create one to get started!</p>
           ) : (
             classes.map((classItem) => (
               <div
                 key={classItem.id}
-                className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded hover:shadow transition"
+                className="flex items-center justify-between p-4 bg-white border border-slate-200 rounded hover:shadow transition"
               >
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-lg font-semibold text-slate-900">
                     {classItem.name}
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-slate-500">
                     {new Date(classItem.created_at).toLocaleDateString()}
                   </p>
                 </div>
                 <div className="flex gap-2">
                   <Link
                     href={`/class/${classItem.id}`}
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                    className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
                   >
                     Open
                   </Link>
                   <button
                     onClick={() => handleDeleteClass(classItem.id)}
-                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                    className="px-4 py-2 bg-rose-600 text-white rounded hover:bg-rose-700 transition"
                   >
                     Delete
                   </button>

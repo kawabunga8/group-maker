@@ -158,20 +158,7 @@ export default function ClassDetailPage() {
     setLastPickedName(null);
     setGroupResult(result);
   };
-    const handlePickRandomStudent = () => {
-      if (!groupResult) return;
 
-    const pool = groupResult.groups.flat();
-      if (pool.length === 0) return;
-
-    const candidates =
-    lastPickedName && pool.length > 1 ? pool.filter((name) => name !== lastPickedName) : pool;
-
-    const chosen = candidates[Math.floor(Math.random() * candidates.length)];
-
-    setPickedStudent(chosen as any); // see note below
-    setLastPickedName(chosen);
-  };
 
 
   const handleRegenerateGroups = () => {
@@ -192,7 +179,7 @@ export default function ClassDetailPage() {
   };
 
   if (loading) {
-    return <div className="p-8 text-gray-600">Loading...</div>;
+    return <div className="p-8 text-slate-600">Loading...</div>;
   }
 
   if (!classData) {
@@ -201,7 +188,7 @@ export default function ClassDetailPage() {
         <p className="text-red-600">Class not found</p>
         <button
           onClick={() => router.push('/')}
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
         >
           Back to Classes
         </button>
@@ -210,14 +197,14 @@ export default function ClassDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">{classData.name}</h1>
+          <h1 className="text-3xl font-bold text-slate-900">{classData.name}</h1>
           <button
             onClick={() => router.push('/')}
-            className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
+            className="px-4 py-2 bg-slate-700 text-white rounded hover:bg-slate-800 transition"
           >
             Back
           </button>
@@ -232,8 +219,8 @@ export default function ClassDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left: Students Management */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded border border-gray-200 p-6 h-full">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <div className="bg-white rounded border border-slate-200 p-6 h-full">
+              <h2 className="text-xl font-semibold text-slate-900 mb-4">
                 Students ({students.length})
               </h2>
 
@@ -245,11 +232,11 @@ export default function ClassDetailPage() {
                     placeholder="Student name..."
                     value={newStudentName}
                     onChange={(e) => setNewStudentName(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="px-3 py-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                    className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
                   >
                     Add Student
                   </button>
@@ -259,7 +246,7 @@ export default function ClassDetailPage() {
               {/* Bulk Add Toggle */}
               <button
                 onClick={() => setShowBulkInput(!showBulkInput)}
-                className="w-full mb-4 px-4 py-2 bg-gray-200 text-gray-900 rounded hover:bg-gray-300 transition text-sm"
+                className="w-full mb-4 px-4 py-2 bg-slate-200 text-slate-900 rounded hover:bg-slate-300 transition text-sm"
               >
                 {showBulkInput ? 'Hide Bulk Add' : 'Bulk Add'}
               </button>
@@ -272,11 +259,11 @@ export default function ClassDetailPage() {
                       placeholder="One name per line..."
                       value={bulkStudentText}
                       onChange={(e) => setBulkStudentText(e.target.value)}
-                      className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm h-28"
+                      className="px-3 py-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm h-28"
                     />
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                      className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition"
                     >
                       Add All
                     </button>
@@ -287,14 +274,14 @@ export default function ClassDetailPage() {
               {/* Students List */}
               <div className="space-y-2 max-h-64 overflow-y-auto">
                 {students.length === 0 ? (
-                  <p className="text-gray-500 text-sm">No students added yet</p>
+                  <p className="text-slate-500 text-sm">No students added yet</p>
                 ) : (
                   students.map((student) => (
                     <div
                       key={student.id}
                       className="flex items-center justify-between p-2 bg-gray-50 rounded"
                     >
-                      <span className="text-sm text-gray-900">{student.full_name}</span>
+                      <span className="text-sm text-slate-900">{student.full_name}</span>
                       <div className="flex items-center gap-2">
 
                       <button
@@ -324,19 +311,19 @@ export default function ClassDetailPage() {
 
           {/* Right: Grouping Controls & Results */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded border border-gray-200 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <div className="bg-white rounded border border-slate-200 p-6">
+              <h2 className="text-xl font-semibold text-slate-900 mb-4">
                 Group Generator
               </h2>
 
               {students.length === 0 ? (
-                <p className="text-gray-500">Add students to generate groups</p>
+                <p className="text-slate-500">Add students to generate groups</p>
               ) : (
                 <>
                   {/* Controls */}
                   <div className="mb-6 space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
                         Group Size
                       </label>
                       <input
@@ -345,18 +332,18 @@ export default function ClassDetailPage() {
                         max="20"
                         value={groupSize}
                         onChange={(e) => setGroupSize(Math.max(2, parseInt(e.target.value) || 1))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
                         Leftover Handling
                       </label>
                       <select
                         value={strategy}
                         onChange={(e) => setStrategy(e.target.value as GroupingStrategy)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       >
                         <option value="allow-smaller">Allow Last Group Smaller</option>
                         <option value="distribute">Distribute Across Groups</option>
@@ -366,7 +353,7 @@ export default function ClassDetailPage() {
                     <div className="flex gap-2">
                       <button
                         onClick={handleGenerateGroups}
-                        className="flex-1 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition font-medium"
+                        className="flex-1 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition font-medium"
                       >
                         Generate
                       </button>
@@ -374,13 +361,13 @@ export default function ClassDetailPage() {
                         <>
                           <button
                             onClick={handleRegenerateGroups}
-                            className="flex-1 px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 transition font-medium"
+                            className="flex-1 px-4 py-2 bg-amber-600 text-white rounded hover:bg-amber-700 transition font-medium"
                           >
                             Regenerate
                           </button>
                           <button
                             onClick={handleCopyGroups}
-                            className="flex-1 px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition font-medium"
+                            className="flex-1 px-4 py-2 bg-violet-600 text-white rounded hover:bg-violet-700 transition font-medium"
                           >
                             Copy
                           </button>
@@ -407,7 +394,7 @@ export default function ClassDetailPage() {
                   {/* Results */}
                   {groupResult && (
                     <div className="mt-6 space-y-4 max-h-[400px] overflow-y-auto">
-                      <h3 className="text-lg font-semibold text-gray-900">
+                      <h3 className="text-lg font-semibold text-slate-900">
                         Groups ({groupResult.groups.length})
                       </h3>
                       {groupResult.groups.map((group, idx) => (
