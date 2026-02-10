@@ -155,7 +155,7 @@ export default function ClassDetailPage() {
 
     const result = generateGroups(studentNames, { groupSize, strategy });
     setPickedStudent(null);
-    setLastPickedId(null);
+    setLastPickedName(null);
     setGroupResult(result);
   };
     const handlePickRandomStudent = () => {
@@ -170,7 +170,7 @@ export default function ClassDetailPage() {
     const chosen = candidates[Math.floor(Math.random() * candidates.length)];
 
     setPickedStudent(chosen as any); // see note below
-    setLastPickedId(chosen);
+    setLastPickedName(chosen);
   };
 
 
