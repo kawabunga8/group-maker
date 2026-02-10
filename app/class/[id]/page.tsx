@@ -21,6 +21,36 @@ export default function ClassDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [showBulkInput, setShowBulkInput] = useState(false);
 
+  const [absentIds, setAbsentIds] = useState<Set<string>>(new Set());
+  const [lastPickedName, setLastPickedName] = useState<string | null>(null);
+  const [pickedStudent, setPickedStudent] = useState<string | null>(null);
+
+
+  function pickRandomFromGroups() {
+    if (!groupResult) return;
+
+    const pool = groupResult.groups.flat(); // string[]
+    if (pool.length === 0) return;
+
+    const candidates =
+      lastPickedName && pool.length > 1 ? pool.filter((name) => name !== lastPickedName) : pool;
+
+
+    const chosen = candidates[Math.floor(Math.random() * candidates.length)];
+
+    setPickedStudent(chosen);
+    setLastPickedName(chosen);
+
+  }
+
+  function toggleAbsent(id: string) {
+  setAbsentIds((prev) => {
+    const next = new Set(prev);
+    next.has(id) ? next.delete(id) : next.add(id);
+    return next;
+  });
+  }
+
   // Fetch class and students
   useEffect(() => {
     const fetchData = async () => {
@@ -120,12 +150,33 @@ export default function ClassDetailPage() {
   };
 
   const handleGenerateGroups = () => {
-    const studentNames = students.map((s) => s.full_name);
+    const presentStudents = students.filter((s) => !absentIds.has(s.id));
+    const studentNames = presentStudents.map((s) => s.full_name);
+
     const result = generateGroups(studentNames, { groupSize, strategy });
+    setPickedStudent(null);
+    setLastPickedId(null);
     setGroupResult(result);
   };
+    const handlePickRandomStudent = () => {
+      if (!groupResult) return;
+
+    const pool = groupResult.groups.flat();
+      if (pool.length === 0) return;
+
+    const candidates =
+    lastPickedId && pool.length > 1 ? pool.filter((name) => name !== lastPickedId) : pool;
+
+    const chosen = candidates[Math.floor(Math.random() * candidates.length)];
+
+    setPickedStudent(chosen as any); // see note below
+    setLastPickedId(chosen);
+  };
+
 
   const handleRegenerateGroups = () => {
+    setPickedStudent(null);
+    setLastPickedName(null);
     handleGenerateGroups();
   };
 
@@ -244,12 +295,26 @@ export default function ClassDetailPage() {
                       className="flex items-center justify-between p-2 bg-gray-50 rounded"
                     >
                       <span className="text-sm text-gray-900">{student.full_name}</span>
+                      <div className="flex items-center gap-2">
+
+                      <button
+                        type="button"
+                        onClick={() => toggleAbsent(student.id)}
+                        className={`text-xs px-2 py-1 rounded ${
+                          absentIds.has(student.id)
+                          ? "bg-red-600 text-white"
+                          : "bg-gray-200 text-gray-800"
+                        }`}
+                      >
+                        {absentIds.has(student.id) ? "Absent" : "Present"}
+                      </button>
                       <button
                         onClick={() => handleDeleteStudent(student.id)}
                         className="text-red-600 hover:text-red-800 text-xs font-semibold"
                       >
                         ×
                       </button>
+                      </div>
                     </div>
                   ))
                 )}
@@ -319,6 +384,21 @@ export default function ClassDetailPage() {
                           >
                             Copy
                           </button>
+                          <button
+                            onClick={pickRandomFromGroups}
+                            //disabled={!groupResult}
+                            className="flex-1 px-4 py-2 bg-slate-700 text-white rounded disabled:opacity-50"
+                          >
+                            Pick Random Student
+                          </button>
+                          {pickedStudent && (
+                            <div className="mt-3 p-3 border rounded bg-white">
+                              <div className="font-semibold">Selected Student</div>
+                              <div>{pickedStudent}</div>
+                            </div>
+                          )}
+ ⁠
+
                         </>
                       )}
                     </div>
