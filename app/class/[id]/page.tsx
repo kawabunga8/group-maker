@@ -165,7 +165,7 @@ export default function ClassDetailPage() {
       if (pool.length === 0) return;
 
     const candidates =
-    lastPickedId && pool.length > 1 ? pool.filter((name) => name !== lastPickedId) : pool;
+    lastPickedName && pool.length > 1 ? pool.filter((name) => name !== lastPickedName) : pool;
 
     const chosen = candidates[Math.floor(Math.random() * candidates.length)];
 
