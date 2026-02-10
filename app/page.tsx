@@ -95,43 +95,44 @@ export default function ClassesPage() {
         </form>
 
         {/* Classes List */}
-        <div className="space-y-4">
-          {loading ? (
-            <p className="text-slate-600">Loading classes...</p>
-          ) : classes.length === 0 ? (
-            <p className="text-slate-600">No classes yet. Create one to get started!</p>
-          ) : (
-            classes.map((classItem) => (
+        {loading ? (
+          <p className="text-slate-600">Loading classes...</p>
+        ) : classes.length === 0 ? (
+          <p className="text-slate-600">No classes yet. Create one to get started!</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {classes.map((classItem) => (
               <div
                 key={classItem.id}
-                className="flex items-center justify-between p-4 bg-white border border-sky-200 rounded hover:shadow transition"
+                className="flex flex-col justify-between p-4 bg-white border border-sky-200 rounded hover:shadow transition"
               >
                 <div>
-                  <h3 className="text-lg font-semibold text-slate-900">
+                  <h3 className="text-lg font-semibold text-slate-900 break-words">
                     {classItem.name}
                   </h3>
-                  <p className="text-sm text-slate-500">
+                  <p className="text-sm text-slate-500 mt-1">
                     {new Date(classItem.created_at).toLocaleDateString()}
                   </p>
                 </div>
-                <div className="flex gap-2">
+
+                <div className="flex gap-2 mt-4">
                   <Link
                     href={`/class/${classItem.id}`}
-                    className="px-4 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600 transition"
+                    className="flex-1 text-center px-4 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600 transition"
                   >
                     Open
                   </Link>
                   <button
                     onClick={() => handleDeleteClass(classItem.id)}
-                    className="px-4 py-2 bg-rose-400 text-white rounded hover:bg-rose-500 transition"
+                    className="flex-1 px-4 py-2 bg-rose-400 text-white rounded hover:bg-rose-500 transition"
                   >
                     Delete
                   </button>
                 </div>
               </div>
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
