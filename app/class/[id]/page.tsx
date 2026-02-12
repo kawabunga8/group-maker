@@ -22,25 +22,31 @@ export default function ClassDetailPage() {
   const [showBulkInput, setShowBulkInput] = useState(false);
 
   const [absentIds, setAbsentIds] = useState<Set<string>>(new Set());
-  const [lastPickedName, setLastPickedName] = useState<string | null>(null);
   const [pickedStudent, setPickedStudent] = useState<string | null>(null);
+  const [remainingPickPool, setRemainingPickPool] = useState<string[]>([]);
 
 
   function pickRandomFromGroups() {
     if (!groupResult) return;
 
-    const pool = groupResult.groups.flat(); // string[]
+    // If the pool is empty (or not initialized), initialize it from the current groups.
+    const initPool = () => {
+      const pool = groupResult.groups.flat();
+      setRemainingPickPool(pool);
+      return pool;
+    };
+
+    const pool = remainingPickPool.length > 0 ? remainingPickPool : initPool();
     if (pool.length === 0) return;
 
-    const candidates =
-      lastPickedName && pool.length > 1 ? pool.filter((name) => name !== lastPickedName) : pool;
+    const idx = Math.floor(Math.random() * pool.length);
+    const chosen = pool[idx];
 
-
-    const chosen = candidates[Math.floor(Math.random() * candidates.length)];
+    // Remove the chosen student from the pool so we don't repeat until everyone has been picked.
+    const nextPool = pool.filter((_, i) => i !== idx);
 
     setPickedStudent(chosen);
-    setLastPickedName(chosen);
-
+    setRemainingPickPool(nextPool);
   }
 
   function toggleAbsent(id: string) {
@@ -155,7 +161,7 @@ export default function ClassDetailPage() {
 
     const result = generateGroups(studentNames, { groupSize, strategy });
     setPickedStudent(null);
-    setLastPickedName(null);
+    setRemainingPickPool(result.groups.flat());
     setGroupResult(result);
   };
 
@@ -163,7 +169,7 @@ export default function ClassDetailPage() {
 
   const handleRegenerateGroups = () => {
     setPickedStudent(null);
-    setLastPickedName(null);
+    setRemainingPickPool([]);
     handleGenerateGroups();
   };
 
@@ -373,18 +379,24 @@ export default function ClassDetailPage() {
                           </button>
                           <button
                             onClick={pickRandomFromGroups}
-                            //disabled={!groupResult}
                             className="flex-1 px-4 py-2 bg-slate-700 text-white rounded disabled:opacity-50"
+                            disabled={!groupResult}
+                            title={!groupResult ? "Generate groups first" : undefined}
                           >
                             Pick Random Student
                           </button>
+                          <div className="flex-1 text-sm text-slate-600 self-center">
+                            Remaining in this round: <span className="font-semibold">{remainingPickPool.length}</span>
+                            {remainingPickPool.length === 0 ? (
+                              <span className="ml-2 opacity-80">(all picked — next pick resets)</span>
+                            ) : null}
+                          </div>
                           {pickedStudent && (
                             <div className="mt-3 p-3 border rounded bg-white">
                               <div className="font-semibold">Selected Student</div>
                               <div>{pickedStudent}</div>
                             </div>
                           )}
- ⁠
 
                         </>
                       )}
