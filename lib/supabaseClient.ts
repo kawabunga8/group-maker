@@ -18,6 +18,7 @@ export type Class = {
   id: string;
   name: string;
   created_at: string;
+  source_course_id: string | null;
 };
 
 export type Student = {
