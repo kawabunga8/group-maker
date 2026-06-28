@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireAuth } from '@/lib/require-auth'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!
+// Service-role key, not the anon/publishable key: public.courses only grants RLS
+// access to the "authenticated" role, and this route never forwards a real user
+// JWT to PostgREST (it auths the caller separately via requireAuth() below). The
+// anon key would get silently empty-result'ed by RLS instead of erroring.
+const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY!
 
 async function supabaseGet(path: string) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
