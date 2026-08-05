@@ -80,9 +80,18 @@ export default function GroupingView({ students, title }: Props) {
           <div className="flex items-center gap-4 flex-wrap">
             <h1 className="text-3xl font-bold text-slate-900 tracking-tight">{title}</h1>
             {pickedStudent && (
-              <div className="flex items-center gap-3 bg-amber-400 px-5 py-2 rounded-xl shadow">
-                <span className="text-xs font-bold text-amber-900 uppercase tracking-widest">Selected</span>
-                <span className="text-2xl font-black text-amber-950">{pickedStudent}</span>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                background: '#fbbf24',
+                border: '3px solid #d97706',
+                borderRadius: '14px',
+                padding: '8px 20px',
+                boxShadow: '0 4px 16px rgba(217,119,6,0.45), 0 2px 4px rgba(0,0,0,0.15)',
+              }}>
+                <span style={{ fontSize: '11px', fontWeight: 800, color: '#92400e', textTransform: 'uppercase', letterSpacing: '0.12em' }}>Selected</span>
+                <span style={{ fontSize: '28px', fontWeight: 900, color: '#1c1917', letterSpacing: '-0.01em', lineHeight: 1.1 }}>{pickedStudent}</span>
               </div>
             )}
           </div>
