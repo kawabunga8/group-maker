@@ -151,32 +151,29 @@ export default function GroupingView({ students, title }: Props) {
                       </select>
                     </div>
 
-                    {/* Action buttons — always visible; Regenerate/Copy/Pick disabled until groups exist */}
+                    {/* Action buttons */}
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                       <button
                         onClick={handleGenerateGroups}
-                        className="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition font-medium"
+                        style={{ padding: '8px 16px', background: '#14b8a6', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 600, cursor: 'pointer' }}
                       >
                         Generate
                       </button>
                       <button
-                        onClick={handleRegenerateGroups}
-                        disabled={!groupResult}
-                        className="px-4 py-2 bg-orange-400 text-white rounded hover:bg-orange-500 transition font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+                        onClick={groupResult ? handleRegenerateGroups : undefined}
+                        style={{ padding: '8px 16px', background: groupResult ? '#fb923c' : '#d1d5db', color: groupResult ? '#fff' : '#9ca3af', border: 'none', borderRadius: '6px', fontWeight: 600, cursor: groupResult ? 'pointer' : 'not-allowed' }}
                       >
                         Regenerate
                       </button>
                       <button
-                        onClick={handleCopyGroups}
-                        disabled={!groupResult}
-                        className="px-4 py-2 bg-purple-400 text-white rounded hover:bg-purple-500 transition font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+                        onClick={groupResult ? handleCopyGroups : undefined}
+                        style={{ padding: '8px 16px', background: groupResult ? '#c084fc' : '#d1d5db', color: groupResult ? '#fff' : '#9ca3af', border: 'none', borderRadius: '6px', fontWeight: 600, cursor: groupResult ? 'pointer' : 'not-allowed' }}
                       >
                         Copy
                       </button>
                       <button
-                        onClick={pickRandomFromGroups}
-                        disabled={!groupResult}
-                        className="px-4 py-2 bg-slate-700 text-white rounded hover:bg-slate-800 transition font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+                        onClick={groupResult ? pickRandomFromGroups : undefined}
+                        style={{ padding: '8px 16px', background: groupResult ? '#334155' : '#d1d5db', color: groupResult ? '#fff' : '#9ca3af', border: 'none', borderRadius: '6px', fontWeight: 600, cursor: groupResult ? 'pointer' : 'not-allowed' }}
                       >
                         Pick Random
                       </button>
