@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import GroupingView from '@/components/GroupingView';
 
 type Student = { id: string; full_name: string };
@@ -48,25 +48,18 @@ export default function ClassDetailClient() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseId]);
 
-  function handleBack() {
-    window.history.length > 1 ? router.back() : router.push('/');
-  }
-
   if (loading) return <div className="p-8 text-slate-600">Loading roster...</div>;
 
   if (error) {
     return (
       <div className="p-8">
         <p className="text-red-600 mb-4">{error}</p>
-        <button
-          onClick={handleBack}
-          className="px-4 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600"
-        >
-          Back
-        </button>
+        <a href="/" className="px-4 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600">
+          Home
+        </a>
       </div>
     );
   }
 
-  return <GroupingView students={students} title={title} onBack={handleBack} />;
+  return <GroupingView students={students} title={title} />;
 }

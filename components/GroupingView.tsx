@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
 import { generateGroups, GroupingStrategy, GroupingResult } from '@/lib/grouping';
 
@@ -8,10 +9,9 @@ type Student = { id: string; full_name: string };
 interface Props {
   students: Student[];
   title: string;
-  onBack: () => void;
 }
 
-export default function GroupingView({ students, title, onBack }: Props) {
+export default function GroupingView({ students, title }: Props) {
   const [groupSize, setGroupSize] = useState(3);
   const [strategy, setStrategy] = useState<GroupingStrategy>('allow-smaller');
   const [groupResult, setGroupResult] = useState<GroupingResult | null>(null);
@@ -38,7 +38,10 @@ export default function GroupingView({ students, title, onBack }: Props) {
   function handleRegenerateGroups() {
     setPickedStudent(null);
     setRemainingPickPool([]);
-    handleGenerateGroups();
+    const present = students.filter((s) => !absentIds.has(s.id));
+    const result = generateGroups(present.map((s) => s.full_name), { groupSize, strategy });
+    setRemainingPickPool(result.groups.flat());
+    setGroupResult(result);
   }
 
   function handleCopyGroups() {
@@ -63,14 +66,16 @@ export default function GroupingView({ students, title, onBack }: Props) {
   return (
     <div className="min-h-screen bg-sky-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">{title}</h1>
-          <button
-            onClick={onBack}
-            className="px-4 py-2 bg-slate-600 text-white rounded hover:bg-slate-700 transition"
+
+        {/* Header */}
+        <div className="mb-8">
+          <Link
+            href="/"
+            className="inline-block mb-3 text-sm text-slate-500 hover:text-slate-700 font-semibold"
           >
-            Back
-          </button>
+            ← Home
+          </Link>
+          <h1 className="text-3xl font-bold text-slate-900">{title}</h1>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -146,35 +151,35 @@ export default function GroupingView({ students, title, onBack }: Props) {
                       </select>
                     </div>
 
-                    <div className="flex flex-wrap gap-2">
+                    {/* Action buttons — always visible; Regenerate/Copy/Pick disabled until groups exist */}
+                    <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
                       <button
                         onClick={handleGenerateGroups}
                         className="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition font-medium"
                       >
                         Generate
                       </button>
-                      {groupResult && (
-                        <>
-                          <button
-                            onClick={handleRegenerateGroups}
-                            className="px-4 py-2 bg-orange-400 text-white rounded hover:bg-orange-500 transition font-medium"
-                          >
-                            Regenerate
-                          </button>
-                          <button
-                            onClick={handleCopyGroups}
-                            className="px-4 py-2 bg-purple-400 text-white rounded hover:bg-purple-500 transition font-medium"
-                          >
-                            Copy
-                          </button>
-                          <button
-                            onClick={pickRandomFromGroups}
-                            className="px-4 py-2 bg-slate-700 text-white rounded hover:bg-slate-800 transition font-medium"
-                          >
-                            Pick Random
-                          </button>
-                        </>
-                      )}
+                      <button
+                        onClick={handleRegenerateGroups}
+                        disabled={!groupResult}
+                        className="px-4 py-2 bg-orange-400 text-white rounded hover:bg-orange-500 transition font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+                      >
+                        Regenerate
+                      </button>
+                      <button
+                        onClick={handleCopyGroups}
+                        disabled={!groupResult}
+                        className="px-4 py-2 bg-purple-400 text-white rounded hover:bg-purple-500 transition font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+                      >
+                        Copy
+                      </button>
+                      <button
+                        onClick={pickRandomFromGroups}
+                        disabled={!groupResult}
+                        className="px-4 py-2 bg-slate-700 text-white rounded hover:bg-slate-800 transition font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+                      >
+                        Pick Random
+                      </button>
                     </div>
 
                     {groupResult && (
