@@ -194,7 +194,7 @@ export default function ClassDetailClient() {
       <div className="p-8">
         <p className="text-red-600">Class not found</p>
         <button
-          onClick={() => router.push('/')}
+          onClick={() => router.back()}
           className="mt-4 px-4 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600"
         >
           Back to Classes
@@ -210,7 +210,7 @@ export default function ClassDetailClient() {
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-slate-900">{classData.name}</h1>
           <button
-            onClick={() => router.push('/')}
+            onClick={() => router.back()}
             className="px-4 py-2 bg-slate-600 text-white rounded hover:bg-slate-700 transition"
           >
             Back
