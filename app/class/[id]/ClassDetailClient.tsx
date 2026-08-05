@@ -9,7 +9,6 @@ type Student = { id: string; full_name: string };
 export default function ClassDetailClient() {
   const params = useParams();
   const searchParams = useSearchParams();
-  const router = useRouter();
   const courseId = params.id as string;
   const nameFromUrl = searchParams.get('name') ?? '';
 
