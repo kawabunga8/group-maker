@@ -152,7 +152,7 @@ export default function GroupingView({ students, title }: Props) {
                     </div>
 
                     {/* Action buttons — always visible; Regenerate/Copy/Pick disabled until groups exist */}
-                    <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                       <button
                         onClick={handleGenerateGroups}
                         className="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition font-medium"
