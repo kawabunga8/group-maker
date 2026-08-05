@@ -77,7 +77,15 @@ export default function GroupingView({ students, title }: Props) {
           >
             ← Home
           </Link>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">{title}</h1>
+          <div className="flex items-center gap-4 flex-wrap">
+            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">{title}</h1>
+            {pickedStudent && (
+              <div className="flex items-center gap-3 bg-amber-400 px-5 py-2 rounded-xl shadow">
+                <span className="text-xs font-bold text-amber-900 uppercase tracking-widest">Selected</span>
+                <span className="text-2xl font-black text-amber-950">{pickedStudent}</span>
+              </div>
+            )}
+          </div>
           <p className="text-sm text-slate-500 mt-1">
             {presentCount} present · {absentIds.size} absent
           </p>
@@ -118,12 +126,6 @@ export default function GroupingView({ students, title }: Props) {
             )}
           </div>
 
-          {pickedStudent && (
-            <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-4">
-              <p className="text-xs font-semibold text-amber-600 uppercase tracking-wider mb-1">Selected</p>
-              <p className="text-2xl font-bold text-amber-900">{pickedStudent}</p>
-            </div>
-          )}
         </div>
 
         {/* 2 — Group Generator controls + results */}
