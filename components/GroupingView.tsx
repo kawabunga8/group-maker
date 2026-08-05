@@ -1,5 +1,28 @@
 'use client';
 
+const btnStyles = `
+  .gm-btn {
+    transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+    user-select: none;
+  }
+  .gm-btn:active {
+    transform: scale(0.93) translateY(2px);
+    filter: brightness(0.92);
+  }
+  .gm-btn-active {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.22), 0 1px 3px rgba(0,0,0,0.12);
+  }
+  .gm-btn-active:active {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+  .gm-toggle-btn {
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  .gm-toggle-btn:active {
+    transform: scale(0.9);
+  }
+`;
+
 import Link from 'next/link';
 import { useState } from 'react';
 import { generateGroups, GroupingStrategy, GroupingResult } from '@/lib/grouping';
@@ -67,6 +90,7 @@ export default function GroupingView({ students, title }: Props) {
 
   return (
     <div className="min-h-screen bg-sky-50 py-8 px-4 sm:px-6 lg:px-8">
+      <style>{btnStyles}</style>
       <div className="max-w-4xl mx-auto space-y-5">
 
         {/* Header */}
@@ -110,6 +134,7 @@ export default function GroupingView({ students, title }: Props) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
             <button
               onClick={groupResult ? pickRandomFromGroups : undefined}
+              className={`gm-btn ${groupResult ? 'gm-btn-active' : ''}`}
               style={{
                 padding: '10px 22px',
                 background: groupResult ? '#0f172a' : '#e2e8f0',
@@ -179,18 +204,21 @@ export default function GroupingView({ students, title }: Props) {
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 <button
                   onClick={handleGenerateGroups}
+                  className="gm-btn gm-btn-active"
                   style={{ padding: '8px 20px', background: '#0d9488', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', fontSize: '14px' }}
                 >
                   Generate
                 </button>
                 <button
                   onClick={groupResult ? handleRegenerateGroups : undefined}
+                  className={`gm-btn ${groupResult ? 'gm-btn-active' : ''}`}
                   style={{ padding: '8px 16px', background: groupResult ? '#f97316' : '#e2e8f0', color: groupResult ? '#fff' : '#94a3b8', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: groupResult ? 'pointer' : 'default', fontSize: '14px' }}
                 >
                   Regenerate
                 </button>
                 <button
                   onClick={groupResult ? handleCopyGroups : undefined}
+                  className={`gm-btn ${groupResult ? 'gm-btn-active' : ''}`}
                   style={{ padding: '8px 16px', background: groupResult ? '#a855f7' : '#e2e8f0', color: groupResult ? '#fff' : '#94a3b8', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: groupResult ? 'pointer' : 'default', fontSize: '14px' }}
                 >
                   Copy
@@ -241,6 +269,7 @@ export default function GroupingView({ students, title }: Props) {
                     <button
                       type="button"
                       onClick={() => toggleAbsent(student.id)}
+                      className="gm-toggle-btn"
                       style={{
                         padding: '2px 10px',
                         borderRadius: '999px',
@@ -250,6 +279,7 @@ export default function GroupingView({ students, title }: Props) {
                         cursor: 'pointer',
                         background: absent ? '#fca5a5' : '#bae6fd',
                         color: absent ? '#991b1b' : '#0c4a6e',
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.12)',
                       }}
                     >
                       {absent ? 'Absent' : 'Present'}
