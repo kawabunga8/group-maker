@@ -7,6 +7,16 @@ import { getSupabaseClient, Class } from '@/lib/supabaseClient';
 
 type RealCourse = { id: string; name: string; block: string | null; grade_years: number[] };
 
+const KNOWN_YEARS = ['2025-26', '2026-27'];
+
+function currentSchoolYear(): string {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const startYear = month >= 7 ? year : year - 1;
+  return `${startYear}-${String(startYear + 1).slice(2)}`;
+}
+
 function hashStringToInt(input: string) {
   let h = 0;
   for (let i = 0; i < input.length; i++) {
@@ -34,6 +44,8 @@ export default function ClassesClient() {
   const [showImport, setShowImport] = useState(false);
   const [realCourses, setRealCourses] = useState<RealCourse[]>([]);
   const [importStatus, setImportStatus] = useState<'idle' | 'loading' | 'importing' | 'error'>('idle');
+
+  const [selectedYear, setSelectedYear] = useState(currentSchoolYear);
 
   const [combineMode, setCombineMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -69,7 +81,7 @@ export default function ClassesClient() {
     setShowImport(true);
     setImportStatus('loading');
     try {
-      const res = await fetch('/api/courses');
+      const res = await fetch(`/api/courses?school_year=${selectedYear}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error ?? 'Failed to load courses');
       setRealCourses(data);
@@ -99,9 +111,9 @@ export default function ClassesClient() {
   // imported (tracked by source_course_id) are skipped so re-visiting the page never
   // duplicates rosters. Manual classes and combined classes (source_course_id null)
   // are left alone.
-  async function autoImportCurrentCourses(existing: Class[]) {
+  async function autoImportCurrentCourses(existing: Class[], year = selectedYear) {
     try {
-      const res = await fetch('/api/courses');
+      const res = await fetch(`/api/courses?school_year=${year}`);
       const courses: RealCourse[] = await res.json();
       if (!res.ok || !Array.isArray(courses)) return;
 
@@ -126,11 +138,13 @@ export default function ClassesClient() {
     }
   }
 
-  // Fetch classes on mount, then auto-import any not-yet-imported current courses.
+  // Fetch classes on mount, then auto-import any not-yet-imported courses for the
+  // selected year. Re-runs when selectedYear changes.
   useEffect(() => {
     const fetchClasses = async () => {
       try {
         setLoading(true);
+        setError(null);
         const { data, error } = await supabase
           .from('group_maker_classes')
           .select('*')
@@ -140,7 +154,7 @@ export default function ClassesClient() {
         const existing = data || [];
         setClasses(existing);
         setLoading(false);
-        await autoImportCurrentCourses(existing);
+        await autoImportCurrentCourses(existing, selectedYear);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load classes');
         setLoading(false);
@@ -149,7 +163,7 @@ export default function ClassesClient() {
 
     fetchClasses();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [selectedYear]);
 
   const handleCreateClass = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -241,9 +255,20 @@ export default function ClassesClient() {
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-slate-900">Group Maker</h1>
-          <button onClick={signOut} className="text-sm text-slate-500 hover:text-slate-700 font-semibold">
-            Sign out
-          </button>
+          <div className="flex items-center gap-3">
+            <select
+              value={selectedYear}
+              onChange={(e) => { setSelectedYear(e.target.value); setShowImport(false); }}
+              className="text-sm border border-sky-300 rounded px-2 py-1 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
+            >
+              {KNOWN_YEARS.map((y) => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+            <button onClick={signOut} className="text-sm text-slate-500 hover:text-slate-700 font-semibold">
+              Sign out
+            </button>
+          </div>
         </div>
 
         {error && (
