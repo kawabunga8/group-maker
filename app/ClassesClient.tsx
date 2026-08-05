@@ -117,7 +117,15 @@ export default function ClassesClient() {
       const courses: RealCourse[] = await res.json();
       if (!res.ok || !Array.isArray(courses)) return;
 
-      const importedCourseIds = new Set(existing.map((c) => c.source_course_id).filter(Boolean));
+      // Include hidden classes in the "already imported" set so deleted auto-imports
+      // don't get re-imported on the next page load.
+      const { data: allImported } = await supabase
+        .from('group_maker_classes')
+        .select('source_course_id')
+        .not('source_course_id', 'is', null)
+      const importedCourseIds = new Set(
+        (allImported ?? []).map((c: { source_course_id: string | null }) => c.source_course_id).filter(Boolean)
+      );
       const toImport = courses.filter((c) => !importedCourseIds.has(c.id));
       if (toImport.length === 0) return;
 
@@ -148,6 +156,7 @@ export default function ClassesClient() {
         const { data, error } = await supabase
           .from('group_maker_classes')
           .select('*')
+          .eq('hidden', false)
           .order('name', { ascending: true });
 
         if (error) throw error;
@@ -186,12 +195,21 @@ export default function ClassesClient() {
     }
   };
 
-  const handleDeleteClass = async (id: string) => {
+  const handleDeleteClass = async (cls: Class) => {
+    const label = cls.source_course_id ? 'hide' : 'permanently delete'
+    if (!window.confirm(`${label === 'hide' ? 'Hide' : 'Delete'} "${cls.name}"? ${cls.source_course_id ? 'It was auto-imported — hiding removes it from view without destroying the data.' : 'This cannot be undone.'}`)) return
     try {
       setError(null);
-      const { error } = await supabase.from('group_maker_classes').delete().eq('id', id);
-      if (error) throw error;
-      setClasses(classes.filter((c) => c.id !== id));
+      if (cls.source_course_id) {
+        // Auto-imported: hide rather than delete so it doesn't re-import on reload.
+        const { error } = await supabase.from('group_maker_classes').update({ hidden: true }).eq('id', cls.id);
+        if (error) throw error;
+      } else {
+        // Manual/combined: permanent delete (cascades students).
+        const { error } = await supabase.from('group_maker_classes').delete().eq('id', cls.id);
+        if (error) throw error;
+      }
+      setClasses(classes.filter((c) => c.id !== cls.id));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete class');
     }
@@ -398,7 +416,7 @@ export default function ClassesClient() {
                       Open
                     </Link>
                     <button
-                      onClick={() => handleDeleteClass(classItem.id)}
+                      onClick={() => handleDeleteClass(classItem)}
                       className="flex-1 px-4 py-2 bg-rose-400 text-white rounded hover:bg-rose-500 transition"
                     >
                       Delete
