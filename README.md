@@ -5,7 +5,7 @@ A web-based application for creating random groups from a class of students. Bui
 ## Features
 
 - ✨ Create and manage multiple classes
-- 📥 Import a real course roster (current-quarter-aware) from Student Hub, or type/paste names manually
+- 📥 Import a real course roster (current-quarter-aware) from Course Hub, or type/paste names manually
 - 👥 Add students individually or in bulk
 - 🎲 Generate random groups with configurable size
 - ⚙️ Choose leftover handling strategy (allow smaller groups or distribute across groups)
@@ -15,7 +15,7 @@ A web-based application for creating random groups from a class of students. Bui
 ## Tech Stack
 
 - **Frontend**: Next.js 14+ (App Router), TypeScript, Tailwind CSS
-- **Database**: Supabase PostgreSQL — the shared "kawabunga8's Project", same one TOC-Dayplans, Student Hub, Report Card Tool, and Kawahoot use
+- **Database**: Supabase PostgreSQL — the shared "kawabunga8's Project", same one TOC-Dayplans, Course Hub, Report Card Tool, and Kawahoot use
 - **Auth**: Real Supabase Auth (same `@myrcs.ca` staff account as the other RCS apps), gated by `middleware.ts`
 - **Client**: `@supabase/supabase-js` + `@supabase/ssr`
 
@@ -40,7 +40,7 @@ Get these from the Supabase dashboard → Project Settings → API Keys, on the 
 
 ### 2. Database
 
-The shared schema (`public.classes`, `public.students`, `public.courses`, `public.enrollments`, etc.) is owned and migrated by the **student-hub** repo — see `student-hub/supabase/shared-schema.sql` and `student-hub/supabase/migrations/`. Group Maker's own ad-hoc classes/students live in `public.group_maker_classes`/`public.group_maker_students` (separate from the real student records, since groupings here are often manually-typed and not tied to a real course).
+The shared schema (`public.classes`, `public.students`, `public.courses`, `public.enrollments`, etc.) is owned and migrated by the **course-hub** repo — see `course-hub/supabase/shared-schema.sql` and `course-hub/supabase/migrations/`. Group Maker's own ad-hoc classes/students live in `public.group_maker_classes`/`public.group_maker_students` (separate from the real student records, since groupings here are often manually-typed and not tied to a real course).
 
 ### 3. Run
 

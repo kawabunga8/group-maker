@@ -6,7 +6,7 @@ const STAFF_DOMAIN = '@myrcs.ca'
 /**
  * Returns a 401 response if the request isn't from an authenticated @myrcs.ca
  * staff member, otherwise null. Real auth via the Supabase session cookie set
- * by middleware.ts — same account as TOC-Dayplans/Student Hub/Report Card
+ * by middleware.ts — same account as TOC-Dayplans/Course Hub/Report Card
  * Tool/Kawahoot.
  */
 export async function requireAuth(req: NextRequest): Promise<NextResponse | null> {
