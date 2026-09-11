@@ -1,30 +1,32 @@
 # Group Maker
 
-A web-based application for creating random groups from a class of students. Built with Next.js, TypeScript, Tailwind CSS, and Supabase PostgreSQL.
+A web-based application for creating random groups from a class of students. Built with Next.js, TypeScript, and Tailwind CSS, reading live course rosters from Course Hub.
 
 ## Features
 
-- ✨ Create and manage multiple classes
-- 📥 Import a real course roster (current-quarter-aware) from Course Hub, or type/paste names manually
-- 👥 Add students individually or in bulk
+- 📥 Browse your current-quarter-aware courses and open one to see its roster, pulled live from Course Hub
+- 🧩 Combine two or more courses into a merged roster for cross-class grouping
+- 🙋 Mark students absent to exclude them from grouping/picking without editing the roster
 - 🎲 Generate random groups with configurable size
 - ⚙️ Choose leftover handling strategy (allow smaller groups or distribute across groups)
 - 📋 Copy groups to clipboard for easy sharing
 - 🔄 Regenerate groups while keeping the same student list
+- 🎯 Pick a single random student from the class
 
 ## Tech Stack
 
 - **Frontend**: Next.js 14+ (App Router), TypeScript, Tailwind CSS
-- **Database**: Supabase PostgreSQL — the shared "kawabunga8's Project", same one TOC-Dayplans, Course Hub, Report Card Tool, and Kawahoot use
+- **Data**: No database of its own — courses and rosters are read live from **Course Hub** via its API. Course Hub owns the shared Supabase Postgres data ("kawabunga8's Project", same project TOC-Dayplans, Report Card Tool, and Kawahoot use)
 - **Auth**: Real Supabase Auth (same `@myrcs.ca` staff account as the other RCS apps), gated by `middleware.ts`
-- **Client**: `@supabase/supabase-js` + `@supabase/ssr`
+- **Client**: `@supabase/supabase-js` + `@supabase/ssr` (auth only — no direct table queries)
 
 ## Quick Start
 
 ### Prerequisites
 
 - Node.js 16+ installed locally
-- Access to the shared Supabase project (ask Mr. Kawamura, or check the other RCS apps' env vars — they all point at the same project)
+- Access to the shared Supabase project for auth (ask Mr. Kawamura, or check the other RCS apps' env vars — they all point at the same project)
+- A Course Hub API key (ask Mr. Kawamura) — required for the course/roster proxy to work
 
 ### 1. Environment Variables
 
@@ -34,13 +36,15 @@ Create `.env.local`:
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=
 SUPABASE_SECRET_KEY=
+COURSE_HUB_URL=
+COURSE_HUB_API_KEY=
 ```
 
-Get these from the Supabase dashboard → Project Settings → API Keys, on the shared project. **Never commit real values** — `.env.local` is gitignored, and `.env.example` should only ever hold blank placeholders.
+Get the Supabase values from the Supabase dashboard → Project Settings → API Keys, on the shared project (used for auth only). Get `COURSE_HUB_URL`/`COURSE_HUB_API_KEY` from Course Hub — Group Maker calls its API to read courses and rosters. **Never commit real values** — `.env.local` is gitignored, and `.env.example` should only ever hold blank placeholders.
 
-### 2. Database
+### 2. Data
 
-The shared schema (`public.classes`, `public.students`, `public.courses`, `public.enrollments`, etc.) is owned and migrated by the **course-hub** repo — see `course-hub/supabase/shared-schema.sql` and `course-hub/supabase/migrations/`. Group Maker's own ad-hoc classes/students live in `public.group_maker_classes`/`public.group_maker_students` (separate from the real student records, since groupings here are often manually-typed and not tied to a real course).
+Group Maker has no database of its own. `app/api/courses` and `app/api/courses/[id]/roster` are thin, auth-gated proxies that call Course Hub's API (`COURSE_HUB_URL`) for the current-quarter-aware course list and rosters — see the **course-hub** repo for the underlying schema and migrations. Combining classes just merges multiple roster fetches client-side; nothing is persisted.
 
 ### 3. Run
 
@@ -55,24 +59,28 @@ npm run dev
 ```
 group-maker/
 ├── app/
-│   ├── layout.tsx                    # Global layout & metadata
-│   ├── page.tsx                      # Classes list, create class, import a real course roster
-│   ├── login/                        # Staff sign-in (same account as other RCS apps)
-│   ├── api/courses/                  # Read-only: current-quarter-aware real course list + roster
-│   ├── globals.css                   # Tailwind CSS
-│   └── class/[id]/page.tsx           # Class detail: students & grouping
+│   ├── layout.tsx                       # Global layout & metadata
+│   ├── page.tsx / ClassesClient.tsx      # Courses list (by school year) + "combine classes" picker
+│   ├── login/                            # Staff sign-in (same account as other RCS apps)
+│   ├── api/courses/                      # Auth-gated proxy to Course Hub: course list + roster
+│   ├── globals.css                       # Tailwind CSS
+│   ├── class/[id]/                       # Single class: roster & grouping
+│   └── class/combined/                   # Merged roster from multiple selected classes
+├── components/
+│   └── GroupingView.tsx                  # Shared grouping UI: absences, group gen, random pick
 ├── lib/
-│   ├── supabase/{client,server,admin}.ts  # Supabase client variants (browser/SSR/service-role)
-│   ├── require-auth.ts               # Server-side auth check for API routes
-│   ├── supabaseClient.ts             # Browser client + Class/Student types (group_maker_* tables)
-│   └── grouping.ts                   # Group generation logic (Fisher-Yates)
-├── middleware.ts                     # Gates every route except /login behind @myrcs.ca auth
-├── .env.example                      # Reference for env variables (placeholders only)
-├── .gitignore                        # Git ignore rules
-├── package.json                      # Dependencies
-├── tsconfig.json                     # TypeScript config
-├── tailwind.config.ts                # Tailwind CSS config
-└── README.md                         # This file
+│   ├── supabase/{client,server}.ts       # Supabase client variants (browser/SSR) — auth only
+│   ├── supabase/admin.ts                 # Service-role client — currently unused, kept for future server-side needs
+│   ├── require-auth.ts                   # Server-side auth check for API routes
+│   ├── supabaseClient.ts                 # Cached browser client
+│   └── grouping.ts                       # Group generation logic (Fisher-Yates)
+├── middleware.ts                         # Gates every page route except /login behind @myrcs.ca auth
+├── .env.example                          # Reference for env variables (placeholders only)
+├── .gitignore                            # Git ignore rules
+├── package.json                          # Dependencies
+├── tsconfig.json                         # TypeScript config
+├── tailwind.config.ts                    # Tailwind CSS config
+└── README.md                             # This file
 ```
 
 ## Available Scripts
@@ -87,15 +95,14 @@ npm run lint     # Run ESLint
 ## Development Notes
 
 - The app uses React hooks (`useState`, `useEffect`) for state management
-- All Supabase queries are wrapped with error handling
+- Rosters are fetched live on every page load — there's no local cache or snapshot, so roster changes in Course Hub show up immediately
 - The grouping algorithm uses Fisher-Yates shuffle for randomization
 - Tailwind CSS is used for styling—no custom CSS files needed
-- Importing a course roster is a one-time snapshot into `group_maker_students`, not a live sync — re-import if the real roster changes
+- `middleware.ts` skips `/api/*` routes, so each API route calls `requireAuth` itself — that check is the only access control on student data (no Supabase RLS is involved, since this app doesn't query tables directly)
 
 ## Future Enhancements
 
 - Export groups to CSV/PDF
-- Edit student names after creation
 - Group templates based on common sizes
 - Statistics & history of generated groups
 
