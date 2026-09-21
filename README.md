@@ -106,6 +106,10 @@ npm run lint     # Run ESLint
 - Group templates based on common sizes
 - Statistics & history of generated groups
 
+## AI & student data (if adding an AI feature here)
+
+Group Maker doesn't call any AI provider today. Standing RCS rule if that changes: Claude is fine for features with no student data in the prompt; anything sending individual student records to an AI must use a locally-run model instead — see rcs-report-card-tool's `CLAUDE.md` for the established pattern.
+
 ## License
 
 MIT
