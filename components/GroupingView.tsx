@@ -124,6 +124,38 @@ export default function GroupingView({ students, title }: Props) {
           </p>
         </div>
 
+        {/* Groups — projector-friendly: large, high-contrast, right at the top */}
+        <div className="bg-white rounded-2xl border-2 border-slate-800 shadow-md p-5 sm:p-6">
+          {groupResult ? (
+            <div
+              className="grid gap-4"
+              style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}
+            >
+              {groupResult.groups.map((group, idx) => (
+                <div key={idx} className="bg-slate-900 rounded-xl overflow-hidden">
+                  <p className="text-white font-extrabold uppercase tracking-wide text-lg sm:text-xl px-4 py-2">
+                    Group {idx + 1}
+                  </p>
+                  <ul className="bg-white divide-y divide-slate-200">
+                    {group.map((name, i) => (
+                      <li
+                        key={i}
+                        className="text-slate-900 font-bold text-xl sm:text-2xl px-4 py-2.5 leading-snug"
+                      >
+                        {name}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-slate-400 text-base sm:text-lg text-center py-6">
+              Groups will appear here — set options below and hit Generate.
+            </p>
+          )}
+        </div>
+
         {/* 1 — Student Picker */}
         <div className="bg-white rounded-xl border border-sky-200 shadow-sm p-5">
           <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">
@@ -224,23 +256,6 @@ export default function GroupingView({ students, title }: Props) {
                   Copy
                 </button>
               </div>
-
-              {groupResult && (
-                <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {groupResult.groups.map((group, idx) => (
-                    <div key={idx} className="bg-sky-50 border border-sky-200 rounded-lg p-3">
-                      <p className="text-xs font-semibold text-sky-600 uppercase tracking-wider mb-2">
-                        Group {idx + 1}
-                      </p>
-                      <ul className="space-y-1">
-                        {group.map((name, i) => (
-                          <li key={i} className="text-sm text-slate-800">{name}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              )}
             </>
           )}
         </div>
