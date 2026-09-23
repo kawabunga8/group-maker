@@ -87,6 +87,11 @@ export default function GroupingView({ students, title }: Props) {
   }
 
   const presentCount = students.length - absentIds.size;
+  // groupResult can be a non-null object with zero groups (e.g. everyone
+  // marked absent, or a config that leaves nothing to group) — check group
+  // count, not just presence of a result, wherever "is there something to
+  // act on" actually matters.
+  const hasGroups = (groupResult?.groups.length ?? 0) > 0;
 
   return (
     <div className="min-h-screen bg-sky-50 py-8 px-4 sm:px-6 lg:px-8">
@@ -126,12 +131,12 @@ export default function GroupingView({ students, title }: Props) {
 
         {/* Groups — projector-friendly: large, high-contrast, right at the top */}
         <div className="bg-white rounded-2xl border-2 border-slate-800 shadow-md p-5 sm:p-6">
-          {groupResult ? (
+          {hasGroups ? (
             <div
               className="grid gap-4"
               style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}
             >
-              {groupResult.groups.map((group, idx) => (
+              {groupResult!.groups.map((group, idx) => (
                 <div key={idx} className="bg-slate-900 rounded-xl overflow-hidden">
                   <p className="text-white font-extrabold uppercase tracking-wide text-lg sm:text-xl px-4 py-2">
                     Group {idx + 1}
@@ -149,6 +154,10 @@ export default function GroupingView({ students, title }: Props) {
                 </div>
               ))}
             </div>
+          ) : groupResult ? (
+            <p className="text-slate-400 text-base sm:text-lg text-center py-6">
+              No students to group — check who's marked absent below, or lower the group size.
+            </p>
           ) : (
             <p className="text-slate-400 text-base sm:text-lg text-center py-6">
               Groups will appear here — set options below and hit Generate.
@@ -165,25 +174,25 @@ export default function GroupingView({ students, title }: Props) {
           {/* Pick Random button + result */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
             <button
-              onClick={groupResult ? pickRandomFromGroups : undefined}
-              className={`gm-btn ${groupResult ? 'gm-btn-active' : ''}`}
+              onClick={hasGroups ? pickRandomFromGroups : undefined}
+              className={`gm-btn ${hasGroups ? 'gm-btn-active' : ''}`}
               style={{
                 padding: '10px 22px',
-                background: groupResult ? '#0f172a' : '#e2e8f0',
-                color: groupResult ? '#fff' : '#94a3b8',
+                background: hasGroups ? '#0f172a' : '#e2e8f0',
+                color: hasGroups ? '#fff' : '#94a3b8',
                 border: 'none',
                 borderRadius: '8px',
                 fontWeight: 700,
-                cursor: groupResult ? 'pointer' : 'default',
+                cursor: hasGroups ? 'pointer' : 'default',
                 fontSize: '15px',
               }}
             >
               Pick Random
             </button>
-            {!groupResult && (
+            {!hasGroups && (
               <span className="text-sm text-slate-400">Generate groups first</span>
             )}
-            {groupResult && (
+            {hasGroups && (
               <span className="text-xs text-slate-400">
                 {remainingPickPool.length > 0
                   ? `${remainingPickPool.length} remaining`
@@ -242,16 +251,16 @@ export default function GroupingView({ students, title }: Props) {
                   Generate
                 </button>
                 <button
-                  onClick={groupResult ? handleRegenerateGroups : undefined}
-                  className={`gm-btn ${groupResult ? 'gm-btn-active' : ''}`}
-                  style={{ padding: '8px 16px', background: groupResult ? '#f97316' : '#e2e8f0', color: groupResult ? '#fff' : '#94a3b8', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: groupResult ? 'pointer' : 'default', fontSize: '14px' }}
+                  onClick={hasGroups ? handleRegenerateGroups : undefined}
+                  className={`gm-btn ${hasGroups ? 'gm-btn-active' : ''}`}
+                  style={{ padding: '8px 16px', background: hasGroups ? '#f97316' : '#e2e8f0', color: hasGroups ? '#fff' : '#94a3b8', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: hasGroups ? 'pointer' : 'default', fontSize: '14px' }}
                 >
                   Regenerate
                 </button>
                 <button
-                  onClick={groupResult ? handleCopyGroups : undefined}
-                  className={`gm-btn ${groupResult ? 'gm-btn-active' : ''}`}
-                  style={{ padding: '8px 16px', background: groupResult ? '#a855f7' : '#e2e8f0', color: groupResult ? '#fff' : '#94a3b8', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: groupResult ? 'pointer' : 'default', fontSize: '14px' }}
+                  onClick={hasGroups ? handleCopyGroups : undefined}
+                  className={`gm-btn ${hasGroups ? 'gm-btn-active' : ''}`}
+                  style={{ padding: '8px 16px', background: hasGroups ? '#a855f7' : '#e2e8f0', color: hasGroups ? '#fff' : '#94a3b8', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: hasGroups ? 'pointer' : 'default', fontSize: '14px' }}
                 >
                   Copy
                 </button>

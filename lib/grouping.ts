@@ -56,11 +56,19 @@ export function generateGroups(
     } else if (options.strategy === 'distribute') {
       // Distribute remaining students across existing groups
       const remainingStudents = shuffled.slice(numFullGroups * groupSize);
-      remainingStudents.forEach((student, index) => {
-        if (index < groups.length) {
-          groups[index].push(student);
-        }
-      });
+      if (groups.length === 0) {
+        // No full group formed (groupSize >= total students) — nothing to
+        // distribute into, so these students become their own group.
+        groups.push(remainingStudents);
+      } else {
+        // Cycle through groups rather than only the first `remaining` of
+        // them — remaining can exceed groups.length (e.g. 15 students,
+        // groupSize 10: 1 full group, 5 left over), which silently dropped
+        // the overflow when this only ever wrote to groups[index].
+        remainingStudents.forEach((student, index) => {
+          groups[index % groups.length].push(student);
+        });
+      }
     }
   }
 
