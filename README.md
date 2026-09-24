@@ -16,7 +16,7 @@ A web-based application for creating random groups from a class of students. Bui
 ## Tech Stack
 
 - **Frontend**: Next.js 14+ (App Router), TypeScript, Tailwind CSS
-- **Data**: No database of its own — courses and rosters are read live from **Course Hub** via its API. Course Hub owns the underlying Postgres data — as of 2026-09-23, that's a self-hosted local Supabase stack (`local-stack`, holding real migrated student data), not the original cloud project. **Read `local-stack/STATUS.md` first** for the current picture.
+- **Data**: No database of its own — courses and rosters are read live from **Course Hub** via its API. Course Hub owns the underlying Postgres data — as of 2026-09-23, that's a self-hosted local Supabase stack (the `supabase-local/shared` directory, holding real migrated student data — **not** the similarly-named `local-stack` repo, which is a different, schema-only stack with no real data), not the original cloud project. **Read `local-stack/STATUS.md` first** for the current picture.
 - **Auth**: Real Supabase Auth (same `@myrcs.ca` staff account as the other RCS apps), gated by `middleware.ts`
 - **Client**: `@supabase/supabase-js` + `@supabase/ssr` (auth only — no direct table queries)
 
